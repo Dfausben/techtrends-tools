@@ -17,6 +17,9 @@ on:
     types:
       - techtrends_news_image
 
+permissions:
+  contents: write
+
 jobs:
   resolve-og:
     runs-on: ubuntu-latest
@@ -52,9 +55,29 @@ jobs:
             "${{ steps.params.outputs.noticia_id }}" \
             "${{ steps.params.outputs.url }}"
 
-      - name: Subir resultado como artefacto
-        uses: actions/upload-artifact@v4
-        with:
-          name: techtrends-og-${{ steps.params.outputs.noticia_id }}
-          path: output/*
-          if-no-files-found: error
+      - name: Guardar imagen temporal en el repositorio
+        shell: bash
+        run: |
+          mkdir -p temp-images
+
+          IMAGE_FILE="output/${{ steps.params.outputs.noticia_id }}.jpg"
+
+          if [ -f "$IMAGE_FILE" ]; then
+
+            cp "$IMAGE_FILE" "temp-images/${{ steps.params.outputs.noticia_id }}.jpg"
+
+            git config user.name "techtrends-bot"
+            git config user.email "techtrends-bot@users.noreply.github.com"
+
+            git add "temp-images/${{ steps.params.outputs.noticia_id }}.jpg"
+
+            if git diff --cached --quiet; then
+              echo "No hay cambios que guardar."
+            else
+              git commit -m "Add temporary OG image for news ${{ steps.params.outputs.noticia_id }}"
+              git push
+            fi
+
+          else
+            echo "La noticia no tiene imagen. No se guarda ningún archivo."
+          fi
