@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       noticiaId:
-        description: "ID del elemento en TT_Noticias"
+        description: "IdNoticia"
         required: true
         type: string
 
@@ -14,12 +14,12 @@ on:
         type: string
 
       year:
-        description: "Año de publicación"
+        description: "Año"
         required: true
         type: string
 
       month:
-        description: "Mes de publicación"
+        description: "Mes"
         required: true
         type: string
 
@@ -35,7 +35,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Descargar repositorio
         uses: actions/checkout@v4
 
@@ -76,7 +75,7 @@ jobs:
           echo "Año: ${{ steps.params.outputs.year }}"
           echo "Mes: ${{ steps.params.outputs.month }}"
 
-      - name: Resolver OG Image
+      - name: Resolver imagen
         run: |
           python scripts/resolve_og.py \
             "${{ steps.params.outputs.noticia_id }}" \
@@ -90,9 +89,9 @@ jobs:
           IMAGE_PATH="recap-images/${{ steps.params.outputs.year }}/${{ steps.params.outputs.month }}/${{ steps.params.outputs.noticia_id }}.jpg"
 
           if [ ! -f "$IMAGE_PATH" ]; then
-            echo "La noticia no tiene imagen OG."
-            echo "No se realizará ningún commit."
-            exit 0
+            echo "ERROR: no existe la imagen esperada:"
+            echo "$IMAGE_PATH"
+            exit 1
           fi
 
           git config user.name "techtrends-bot"
