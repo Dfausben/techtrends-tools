@@ -4,12 +4,22 @@ on:
   workflow_dispatch:
     inputs:
       noticiaId:
-        description: "ID de la noticia en TT_Noticias"
+        description: "ID del elemento en TT_Noticias"
         required: true
         type: string
 
       url:
-        description: "URL de la noticia"
+        description: "URL pública de la noticia"
+        required: true
+        type: string
+
+      year:
+        description: "Año de publicación"
+        required: true
+        type: string
+
+      month:
+        description: "Mes de publicación"
         required: true
         type: string
 
@@ -25,6 +35,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Descargar repositorio
         uses: actions/checkout@v4
 
@@ -42,42 +53,61 @@ jobs:
         shell: bash
         run: |
           if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+
             echo "noticia_id=${{ github.event.client_payload.noticiaId }}" >> "$GITHUB_OUTPUT"
             echo "url=${{ github.event.client_payload.url }}" >> "$GITHUB_OUTPUT"
+            echo "year=${{ github.event.client_payload.year }}" >> "$GITHUB_OUTPUT"
+            echo "month=${{ github.event.client_payload.month }}" >> "$GITHUB_OUTPUT"
+
           else
+
             echo "noticia_id=${{ inputs.noticiaId }}" >> "$GITHUB_OUTPUT"
             echo "url=${{ inputs.url }}" >> "$GITHUB_OUTPUT"
+            echo "year=${{ inputs.year }}" >> "$GITHUB_OUTPUT"
+            echo "month=${{ inputs.month }}" >> "$GITHUB_OUTPUT"
+
           fi
 
-      - name: Buscar imagen OG
+      - name: Mostrar parámetros
+        shell: bash
+        run: |
+          echo "Noticia ID: ${{ steps.params.outputs.noticia_id }}"
+          echo "URL: ${{ steps.params.outputs.url }}"
+          echo "Año: ${{ steps.params.outputs.year }}"
+          echo "Mes: ${{ steps.params.outputs.month }}"
+
+      - name: Resolver OG Image
         run: |
           python scripts/resolve_og.py \
             "${{ steps.params.outputs.noticia_id }}" \
-            "${{ steps.params.outputs.url }}"
+            "${{ steps.params.outputs.url }}" \
+            "${{ steps.params.outputs.year }}" \
+            "${{ steps.params.outputs.month }}"
 
-      - name: Guardar imagen temporal en el repositorio
+      - name: Guardar imagen en repositorio
         shell: bash
         run: |
-          mkdir -p temp-images
+          IMAGE_PATH="recap-images/${{ steps.params.outputs.year }}/${{ steps.params.outputs.month }}/${{ steps.params.outputs.noticia_id }}.jpg"
 
-          IMAGE_FILE="output/${{ steps.params.outputs.noticia_id }}.jpg"
+          if [ ! -f "$IMAGE_PATH" ]; then
+            echo "La noticia no tiene imagen OG."
+            echo "No se realizará ningún commit."
+            exit 0
+          fi
 
-          if [ -f "$IMAGE_FILE" ]; then
+          git config user.name "techtrends-bot"
+          git config user.email "techtrends-bot@users.noreply.github.com"
 
-            cp "$IMAGE_FILE" "temp-images/${{ steps.params.outputs.noticia_id }}.jpg"
+          git add "$IMAGE_PATH"
 
-            git config user.name "techtrends-bot"
-            git config user.email "techtrends-bot@users.noreply.github.com"
+          if git diff --cached --quiet; then
 
-            git add "temp-images/${{ steps.params.outputs.noticia_id }}.jpg"
-
-            if git diff --cached --quiet; then
-              echo "No hay cambios que guardar."
-            else
-              git commit -m "Add temporary OG image for news ${{ steps.params.outputs.noticia_id }}"
-              git push
-            fi
+            echo "La imagen ya existe y no ha cambiado."
 
           else
-            echo "La noticia no tiene imagen. No se guarda ningún archivo."
+
+            git commit -m "Add recap image ${{ steps.params.outputs.year }}/${{ steps.params.outputs.month }}/${{ steps.params.outputs.noticia_id }}"
+
+            git push
+
           fi
