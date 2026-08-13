@@ -1,4 +1,3 @@
-import json
 import os
 import sys
 from io import BytesIO
@@ -24,33 +23,11 @@ HEADERS = {
     "Accept-Language": "es-ES,es;q=0.9,en;q=0.8",
 }
 
-
-def save_result(result):
-    """
-    Guarda siempre un result.json para que más adelante podamos
-    consumir el estado desde Power Automate / SharePoint.
-    """
-
-    os.makedirs("output", exist_ok=True)
-
-    result_path = "output/result.json"
-
-    with open(result_path, "w", encoding="utf-8") as file:
-        json.dump(
-            result,
-            file,
-            ensure_ascii=False,
-            indent=2,
-        )
-
-    return result_path
+MAX_WIDTH = 1200
+JPEG_QUALITY = 85
 
 
 def find_meta_image(soup):
-    """
-    Busca las etiquetas de imagen social más habituales.
-    """
-
     candidates = [
         ("property", "og:image"),
         ("property", "og:image:secure_url"),
@@ -75,11 +52,6 @@ def find_meta_image(soup):
 
 
 def convert_to_rgb(image):
-    """
-    Convierte cualquier formato/modo a RGB para generar después JPEG.
-    Si existe transparencia, utilizamos fondo blanco.
-    """
-
     if image.mode == "RGB":
         return image
 
@@ -105,48 +77,56 @@ def convert_to_rgb(image):
     return image.convert("RGB")
 
 
-def resize_image(image, max_width=1200):
-    """
-    Reduce imágenes demasiado grandes manteniendo proporción.
-    No amplía imágenes pequeñas.
-    """
-
-    if image.width <= max_width:
+def resize_image(image):
+    if image.width <= MAX_WIDTH:
         return image
 
-    ratio = max_width / image.width
-
-    new_height = int(
-        image.height * ratio
-    )
+    ratio = MAX_WIDTH / image.width
+    new_height = int(image.height * ratio)
 
     return image.resize(
-        (max_width, new_height),
+        (MAX_WIDTH, new_height),
         Image.Resampling.LANCZOS,
     )
 
 
 def main():
-    if len(sys.argv) < 3:
-        print("ERROR: faltan noticiaId o URL.")
+    if len(sys.argv) < 5:
+        print("ERROR: faltan parámetros.")
         print(
-            "Uso: python resolve_og.py "
-            '"<noticiaId>" "<url>"'
+            'Uso: python resolve_og.py '
+            '"<noticiaId>" "<url>" "<year>" "<month>"'
         )
         sys.exit(1)
 
     noticia_id = sys.argv[1].strip()
     page_url = sys.argv[2].strip()
+    year = sys.argv[3].strip()
+    month = sys.argv[4].strip().zfill(2)
+
+    output_dir = os.path.join(
+        "recap-images",
+        year,
+        month,
+    )
+
+    output_path = os.path.join(
+        output_dir,
+        f"{noticia_id}.jpg",
+    )
 
     print("=" * 60)
-    print("TechTrends OG resolver")
+    print("TechTrends OG Resolver")
     print("=" * 60)
 
     print(f"Noticia ID: {noticia_id}")
     print(f"Página: {page_url}")
+    print(f"Año: {year}")
+    print(f"Mes: {month}")
+    print(f"Destino: {output_path}")
 
     #
-    # 1. Descargar HTML
+    # 1. Descargar página
     #
 
     try:
@@ -160,27 +140,12 @@ def main():
         response.raise_for_status()
 
     except Exception as exc:
-        result = {
-            "noticiaId": noticia_id,
-            "status": "Error",
-            "stage": "pagina",
-            "message": str(exc),
-        }
-
-        save_result(result)
-
         print()
-        print("RESULTADO: ERROR")
-        print(
-            json.dumps(
-                result,
-                ensure_ascii=False,
-                indent=2,
-            )
-        )
+        print("RESULTADO: SIN IMAGEN")
+        print(f"No se pudo descargar la página: {exc}")
+        return
 
-        sys.exit(1)
-
+    print()
     print(f"HTTP página: {response.status_code}")
     print(f"URL final: {response.url}")
 
@@ -195,56 +160,22 @@ def main():
         )
 
     except Exception as exc:
-        result = {
-            "noticiaId": noticia_id,
-            "status": "Error",
-            "stage": "html",
-            "message": str(exc),
-        }
-
-        save_result(result)
-
         print()
-        print("RESULTADO: ERROR")
-        print(
-            json.dumps(
-                result,
-                ensure_ascii=False,
-                indent=2,
-            )
-        )
-
-        sys.exit(1)
+        print("RESULTADO: SIN IMAGEN")
+        print(f"No se pudo interpretar el HTML: {exc}")
+        return
 
     #
-    # 3. Buscar OG
+    # 3. Buscar imagen social
     #
 
     image_url, source = find_meta_image(soup)
 
     if not image_url:
-        result = {
-            "noticiaId": noticia_id,
-            "status": "SinImagen",
-        }
-
-        save_result(result)
-
         print()
         print("RESULTADO: SIN IMAGEN")
-        print(
-            json.dumps(
-                result,
-                ensure_ascii=False,
-                indent=2,
-            )
-        )
-
+        print("No existe og:image ni twitter:image.")
         return
-
-    #
-    # Puede venir una URL relativa.
-    #
 
     image_url = urljoin(
         response.url,
@@ -270,55 +201,19 @@ def main():
         image_response.raise_for_status()
 
     except Exception as exc:
-        result = {
-            "noticiaId": noticia_id,
-            "status": "Error",
-            "stage": "imagen",
-            "source": source,
-            "imageUrl": image_url,
-            "message": str(exc),
-        }
-
-        save_result(result)
-
         print()
-        print("RESULTADO: ERROR")
-        print(
-            json.dumps(
-                result,
-                ensure_ascii=False,
-                indent=2,
-            )
-        )
+        print("RESULTADO: SIN IMAGEN")
+        print(f"No se pudo descargar la imagen: {exc}")
+        return
 
-        sys.exit(1)
-
-    content_type = image_response.headers.get(
-        "Content-Type",
-        "",
-    )
-
-    original_size_kb = (
-        len(image_response.content) / 1024
-    )
-
+    print(f"HTTP imagen: {image_response.status_code}")
     print(
-        f"HTTP imagen: "
-        f"{image_response.status_code}"
-    )
-
-    print(
-        f"Content-Type: "
-        f"{content_type}"
-    )
-
-    print(
-        f"Tamaño original: "
-        f"{original_size_kb:.1f} KB"
+        "Content-Type: "
+        f"{image_response.headers.get('Content-Type', '')}"
     )
 
     #
-    # 5. Validar imagen con Pillow
+    # 5. Validar con Pillow
     #
 
     try:
@@ -331,41 +226,15 @@ def main():
         image.load()
 
     except Exception as exc:
-        result = {
-            "noticiaId": noticia_id,
-            "status": "Error",
-            "stage": "validacion_imagen",
-            "source": source,
-            "imageUrl": image_url,
-            "message": str(exc),
-        }
-
-        save_result(result)
-
         print()
-        print("RESULTADO: ERROR")
-        print(
-            json.dumps(
-                result,
-                ensure_ascii=False,
-                indent=2,
-            )
-        )
+        print("RESULTADO: SIN IMAGEN")
+        print(f"El recurso no es una imagen válida: {exc}")
+        return
 
-        sys.exit(1)
-
-    original_format = image.format
-    original_width = image.width
-    original_height = image.height
-
-    print(
-        f"Formato original: "
-        f"{original_format}"
-    )
-
+    print(f"Formato original: {image.format}")
     print(
         f"Dimensiones originales: "
-        f"{original_width}x{original_height}"
+        f"{image.width}x{image.height}"
     )
 
     #
@@ -373,81 +242,45 @@ def main():
     #
 
     image = convert_to_rgb(image)
-
-    image = resize_image(
-        image,
-        max_width=1200,
-    )
+    image = resize_image(image)
 
     #
-    # 7. Guardar JPEG
+    # 7. Crear carpetas solamente si tenemos imagen
     #
 
     os.makedirs(
-        "output",
+        output_dir,
         exist_ok=True,
     )
 
-    output_path = (
-        f"output/{noticia_id}.jpg"
-    )
+    #
+    # 8. Guardar JPG
+    #
 
     image.save(
         output_path,
         format="JPEG",
-        quality=85,
+        quality=JPEG_QUALITY,
         optimize=True,
     )
 
     final_size_kb = (
-        os.path.getsize(output_path)
-        / 1024
+        os.path.getsize(output_path) / 1024
     )
-
-    #
-    # 8. Resultado estructurado
-    #
-
-    result = {
-        "noticiaId": noticia_id,
-        "status": "Disponible",
-        "source": source,
-        "pageUrl": response.url,
-        "imageUrl": image_url,
-        "original": {
-            "format": original_format,
-            "width": original_width,
-            "height": original_height,
-            "sizeKB": round(
-                original_size_kb,
-                1,
-            ),
-        },
-        "processed": {
-            "format": "JPEG",
-            "width": image.width,
-            "height": image.height,
-            "sizeKB": round(
-                final_size_kb,
-                1,
-            ),
-            "file": output_path,
-        },
-    }
-
-    save_result(result)
 
     print()
     print("=" * 60)
-    print("RESULTADO: OK")
+    print("RESULTADO: IMAGEN DISPONIBLE")
     print("=" * 60)
 
+    print(f"Archivo: {output_path}")
     print(
-        json.dumps(
-            result,
-            ensure_ascii=False,
-            indent=2,
-        )
+        f"Dimensiones finales: "
+        f"{image.width}x{image.height}"
+    )
+    print(
+        f"Tamaño final: "
+        f"{final_size_kb:.1f} KB"
     )
 
 
