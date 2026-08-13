@@ -1,4 +1,5 @@
 import os
+import shutil
 import sys
 from io import BytesIO
 from urllib.parse import urljoin
@@ -25,6 +26,7 @@ HEADERS = {
 
 MAX_WIDTH = 1200
 JPEG_QUALITY = 85
+FALLBACK_PATH = "assets/fallback-news.jpg"
 
 
 def find_meta_image(soup):
@@ -90,6 +92,32 @@ def resize_image(image):
     )
 
 
+def save_fallback(output_path, reason):
+    if not os.path.exists(FALLBACK_PATH):
+        print()
+        print("ERROR: no existe el fallback.")
+        print(f"Ruta esperada: {FALLBACK_PATH}")
+        sys.exit(1)
+
+    os.makedirs(
+        os.path.dirname(output_path),
+        exist_ok=True,
+    )
+
+    shutil.copyfile(
+        FALLBACK_PATH,
+        output_path,
+    )
+
+    print()
+    print("=" * 60)
+    print("RESULTADO: FALLBACK")
+    print("=" * 60)
+    print(f"Motivo: {reason}")
+    print(f"Fallback origen: {FALLBACK_PATH}")
+    print(f"Archivo generado: {output_path}")
+
+
 def main():
     if len(sys.argv) < 5:
         print("ERROR: faltan parámetros.")
@@ -140,9 +168,10 @@ def main():
         response.raise_for_status()
 
     except Exception as exc:
-        print()
-        print("RESULTADO: SIN IMAGEN")
-        print(f"No se pudo descargar la página: {exc}")
+        save_fallback(
+            output_path,
+            f"No se pudo descargar la página: {exc}",
+        )
         return
 
     print()
@@ -160,21 +189,23 @@ def main():
         )
 
     except Exception as exc:
-        print()
-        print("RESULTADO: SIN IMAGEN")
-        print(f"No se pudo interpretar el HTML: {exc}")
+        save_fallback(
+            output_path,
+            f"No se pudo interpretar el HTML: {exc}",
+        )
         return
 
     #
-    # 3. Buscar imagen social
+    # 3. Buscar OG / Twitter image
     #
 
     image_url, source = find_meta_image(soup)
 
     if not image_url:
-        print()
-        print("RESULTADO: SIN IMAGEN")
-        print("No existe og:image ni twitter:image.")
+        save_fallback(
+            output_path,
+            "No existe og:image ni twitter:image.",
+        )
         return
 
     image_url = urljoin(
@@ -201,9 +232,10 @@ def main():
         image_response.raise_for_status()
 
     except Exception as exc:
-        print()
-        print("RESULTADO: SIN IMAGEN")
-        print(f"No se pudo descargar la imagen: {exc}")
+        save_fallback(
+            output_path,
+            f"No se pudo descargar la imagen: {exc}",
+        )
         return
 
     print(f"HTTP imagen: {image_response.status_code}")
@@ -213,7 +245,7 @@ def main():
     )
 
     #
-    # 5. Validar con Pillow
+    # 5. Validar imagen
     #
 
     try:
@@ -226,9 +258,10 @@ def main():
         image.load()
 
     except Exception as exc:
-        print()
-        print("RESULTADO: SIN IMAGEN")
-        print(f"El recurso no es una imagen válida: {exc}")
+        save_fallback(
+            output_path,
+            f"El recurso no es una imagen válida: {exc}",
+        )
         return
 
     print(f"Formato original: {image.format}")
@@ -245,7 +278,7 @@ def main():
     image = resize_image(image)
 
     #
-    # 7. Crear carpetas solamente si tenemos imagen
+    # 7. Crear carpeta
     #
 
     os.makedirs(
@@ -270,7 +303,7 @@ def main():
 
     print()
     print("=" * 60)
-    print("RESULTADO: IMAGEN DISPONIBLE")
+    print("RESULTADO: OG IMAGE")
     print("=" * 60)
 
     print(f"Archivo: {output_path}")
