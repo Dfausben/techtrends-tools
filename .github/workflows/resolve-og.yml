@@ -52,20 +52,23 @@ jobs:
         shell: bash
         run: |
           if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
-
-            echo "noticia_id=${{ github.event.client_payload.noticiaId }}" >> "$GITHUB_OUTPUT"
-            echo "url=${{ github.event.client_payload.url }}" >> "$GITHUB_OUTPUT"
-            echo "year=${{ github.event.client_payload.year }}" >> "$GITHUB_OUTPUT"
-            echo "month=${{ github.event.client_payload.month }}" >> "$GITHUB_OUTPUT"
-
+            NOTICIA_ID="${{ github.event.client_payload.noticiaId }}"
+            URL="${{ github.event.client_payload.url }}"
+            YEAR="${{ github.event.client_payload.year }}"
+            MONTH="${{ github.event.client_payload.month }}"
           else
-
-            echo "noticia_id=${{ inputs.noticiaId }}" >> "$GITHUB_OUTPUT"
-            echo "url=${{ inputs.url }}" >> "$GITHUB_OUTPUT"
-            echo "year=${{ inputs.year }}" >> "$GITHUB_OUTPUT"
-            echo "month=${{ inputs.month }}" >> "$GITHUB_OUTPUT"
-
+            NOTICIA_ID="${{ inputs.noticiaId }}"
+            URL="${{ inputs.url }}"
+            YEAR="${{ inputs.year }}"
+            MONTH="${{ inputs.month }}"
           fi
+
+          MONTH=$(printf "%02d" "$((10#$MONTH))")
+
+          echo "noticia_id=$NOTICIA_ID" >> "$GITHUB_OUTPUT"
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+          echo "year=$YEAR" >> "$GITHUB_OUTPUT"
+          echo "month=$MONTH" >> "$GITHUB_OUTPUT"
 
       - name: Mostrar parámetros
         shell: bash
@@ -100,13 +103,8 @@ jobs:
           git add "$IMAGE_PATH"
 
           if git diff --cached --quiet; then
-
             echo "La imagen ya existe y no ha cambiado."
-
           else
-
             git commit -m "Add recap image ${{ steps.params.outputs.year }}/${{ steps.params.outputs.month }}/${{ steps.params.outputs.noticia_id }}"
-
             git push
-
           fi
