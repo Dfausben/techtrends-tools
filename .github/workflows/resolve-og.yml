@@ -3,6 +3,11 @@ name: TechTrends - Probar OG Image
 on:
   workflow_dispatch:
     inputs:
+      noticiaId:
+        description: "ID de la noticia en TT_Noticias"
+        required: true
+        type: string
+
       url:
         description: "URL de la noticia"
         required: true
@@ -27,11 +32,11 @@ jobs:
 
       - name: Buscar imagen OG
         run: |
-          python scripts/resolve_og.py "${{ inputs.url }}"
+          python scripts/resolve_og.py "${{ inputs.noticiaId }}" "${{ inputs.url }}"
 
-      - name: Subir imagen como artefacto
+      - name: Subir resultado como artefacto
         uses: actions/upload-artifact@v4
         with:
-          name: techtrends-og-image
+          name: techtrends-og-${{ inputs.noticiaId }}
           path: output/*
-          if-no-files-found: ignore
+          if-no-files-found: error
