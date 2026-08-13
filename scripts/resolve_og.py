@@ -153,10 +153,6 @@ def main():
     print(f"Mes: {month}")
     print(f"Destino: {output_path}")
 
-    #
-    # 1. Descargar página
-    #
-
     try:
         response = requests.get(
             page_url,
@@ -178,10 +174,6 @@ def main():
     print(f"HTTP página: {response.status_code}")
     print(f"URL final: {response.url}")
 
-    #
-    # 2. Parsear HTML
-    #
-
     try:
         soup = BeautifulSoup(
             response.text,
@@ -194,10 +186,6 @@ def main():
             f"No se pudo interpretar el HTML: {exc}",
         )
         return
-
-    #
-    # 3. Buscar OG / Twitter image
-    #
 
     image_url, source = find_meta_image(soup)
 
@@ -216,10 +204,6 @@ def main():
     print()
     print(f"Encontrada mediante: {source}")
     print(f"Imagen: {image_url}")
-
-    #
-    # 4. Descargar imagen
-    #
 
     try:
         image_response = requests.get(
@@ -244,10 +228,6 @@ def main():
         f"{image_response.headers.get('Content-Type', '')}"
     )
 
-    #
-    # 5. Validar imagen
-    #
-
     try:
         image = Image.open(
             BytesIO(
@@ -270,25 +250,13 @@ def main():
         f"{image.width}x{image.height}"
     )
 
-    #
-    # 6. Normalizar
-    #
-
     image = convert_to_rgb(image)
     image = resize_image(image)
-
-    #
-    # 7. Crear carpeta
-    #
 
     os.makedirs(
         output_dir,
         exist_ok=True,
     )
-
-    #
-    # 8. Guardar JPG
-    #
 
     image.save(
         output_path,
