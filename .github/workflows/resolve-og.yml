@@ -1,4 +1,4 @@
-name: TechTrends - Probar OG Image
+name: TechTrends - Resolver OG Image
 
 on:
   workflow_dispatch:
@@ -12,6 +12,10 @@ on:
         description: "URL de la noticia"
         required: true
         type: string
+
+  repository_dispatch:
+    types:
+      - techtrends_news_image
 
 jobs:
   resolve-og:
@@ -30,13 +34,27 @@ jobs:
         run: |
           pip install requests beautifulsoup4 pillow
 
+      - name: Preparar parámetros
+        id: params
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            echo "noticia_id=${{ github.event.client_payload.noticiaId }}" >> "$GITHUB_OUTPUT"
+            echo "url=${{ github.event.client_payload.url }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "noticia_id=${{ inputs.noticiaId }}" >> "$GITHUB_OUTPUT"
+            echo "url=${{ inputs.url }}" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Buscar imagen OG
         run: |
-          python scripts/resolve_og.py "${{ inputs.noticiaId }}" "${{ inputs.url }}"
+          python scripts/resolve_og.py \
+            "${{ steps.params.outputs.noticia_id }}" \
+            "${{ steps.params.outputs.url }}"
 
       - name: Subir resultado como artefacto
         uses: actions/upload-artifact@v4
         with:
-          name: techtrends-og-${{ inputs.noticiaId }}
+          name: techtrends-og-${{ steps.params.outputs.noticia_id }}
           path: output/*
           if-no-files-found: error
