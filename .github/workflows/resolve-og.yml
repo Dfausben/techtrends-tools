@@ -1,0 +1,37 @@
+name: TechTrends - Probar OG Image
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "URL de la noticia"
+        required: true
+        type: string
+
+jobs:
+  resolve-og:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependencias
+        run: |
+          pip install requests beautifulsoup4 pillow
+
+      - name: Buscar imagen OG
+        run: |
+          python scripts/resolve_og.py "${{ inputs.url }}"
+
+      - name: Subir imagen como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: techtrends-og-image
+          path: output/*
+          if-no-files-found: ignore
