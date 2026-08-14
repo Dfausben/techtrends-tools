@@ -1,4 +1,4 @@
-name: TechTrends - Resolver OG Image
+name: TechTrends - Resolver OG
 
 on:
   workflow_dispatch:
@@ -9,7 +9,7 @@ on:
         type: string
 
       url:
-        description: "URL pública de la noticia"
+        description: "URL pública"
         required: true
         type: string
 
@@ -29,12 +29,17 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   resolve-og:
     runs-on: ubuntu-latest
 
+    env:
+      TECHTRENDS_BRANCH: main
+
     steps:
+
       - name: Descargar repositorio
         uses: actions/checkout@v4
 
@@ -52,18 +57,20 @@ jobs:
         shell: bash
         run: |
           if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+
             NOTICIA_ID="${{ github.event.client_payload.noticiaId }}"
             URL="${{ github.event.client_payload.url }}"
             YEAR="${{ github.event.client_payload.year }}"
             MONTH="${{ github.event.client_payload.month }}"
+
           else
+
             NOTICIA_ID="${{ inputs.noticiaId }}"
             URL="${{ inputs.url }}"
             YEAR="${{ inputs.year }}"
             MONTH="${{ inputs.month }}"
-          fi
 
-          MONTH=$(printf "%02d" "$((10#$MONTH))")
+          fi
 
           echo "noticia_id=$NOTICIA_ID" >> "$GITHUB_OUTPUT"
           echo "url=$URL" >> "$GITHUB_OUTPUT"
@@ -73,12 +80,12 @@ jobs:
       - name: Mostrar parámetros
         shell: bash
         run: |
-          echo "Noticia ID: ${{ steps.params.outputs.noticia_id }}"
+          echo "ID: ${{ steps.params.outputs.noticia_id }}"
           echo "URL: ${{ steps.params.outputs.url }}"
           echo "Año: ${{ steps.params.outputs.year }}"
           echo "Mes: ${{ steps.params.outputs.month }}"
 
-      - name: Resolver imagen
+      - name: Resolver OG
         run: |
           python scripts/resolve_og.py \
             "${{ steps.params.outputs.noticia_id }}" \
@@ -86,15 +93,15 @@ jobs:
             "${{ steps.params.outputs.year }}" \
             "${{ steps.params.outputs.month }}"
 
-      - name: Guardar imagen en repositorio
+      - name: Guardar imagen OG si existe
         shell: bash
         run: |
           IMAGE_PATH="recap-images/${{ steps.params.outputs.year }}/${{ steps.params.outputs.month }}/${{ steps.params.outputs.noticia_id }}.jpg"
 
           if [ ! -f "$IMAGE_PATH" ]; then
-            echo "ERROR: no existe la imagen esperada:"
-            echo "$IMAGE_PATH"
-            exit 1
+            echo "No existe imagen OG."
+            echo "Se utilizará el fallback global."
+            exit 0
           fi
 
           git config user.name "techtrends-bot"
@@ -103,8 +110,73 @@ jobs:
           git add "$IMAGE_PATH"
 
           if git diff --cached --quiet; then
-            echo "La imagen ya existe y no ha cambiado."
+            echo "No hay cambios que guardar."
+            exit 0
+          fi
+
+          git commit -m "Add OG image ${{ steps.params.outputs.noticia_id }}"
+
+          for ATTEMPT in 1 2 3 4 5
+          do
+
+            echo "Intento de push: $ATTEMPT"
+
+            if git pull --rebase origin main && git push origin HEAD:main
+            then
+              echo "Push completado."
+              exit 0
+            fi
+
+            git rebase --abort || true
+
+            sleep $((ATTEMPT * 2))
+
+          done
+
+          echo "ERROR: no se pudo guardar la imagen."
+          exit 1
+
+      - name: Crear o actualizar Issue de resultado
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ISSUE_TITLE="TT-OG ${{ steps.params.outputs.noticia_id }}"
+
+          echo "Buscando issue:"
+          echo "$ISSUE_TITLE"
+
+          ISSUE_NUMBER="$(
+            gh issue list \
+              --repo "$GITHUB_REPOSITORY" \
+              --state all \
+              --search "\"$ISSUE_TITLE\" in:title" \
+              --limit 1 \
+              --json number \
+              --jq '.[0].number // empty'
+          )"
+
+          if [ -n "$ISSUE_NUMBER" ]; then
+
+            echo "Issue existente: #$ISSUE_NUMBER"
+
+            gh issue edit \
+              "$ISSUE_NUMBER" \
+              --repo "$GITHUB_REPOSITORY" \
+              --body-file output/result.json
+
+            gh issue reopen \
+              "$ISSUE_NUMBER" \
+              --repo "$GITHUB_REPOSITORY" \
+              || true
+
           else
-            git commit -m "Add recap image ${{ steps.params.outputs.year }}/${{ steps.params.outputs.month }}/${{ steps.params.outputs.noticia_id }}"
-            git push
+
+            echo "Creando issue nuevo."
+
+            gh issue create \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "$ISSUE_TITLE" \
+              --body-file output/result.json
+
           fi
