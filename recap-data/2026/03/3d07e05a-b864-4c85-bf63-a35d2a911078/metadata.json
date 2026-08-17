@@ -1,0 +1,14 @@
+{
+  "status": "og",
+  "noticiaId": "3d07e05a-b864-4c85-bf63-a35d2a911078",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/03/3d07e05a-b864-4c85-bf63-a35d2a911078/banner.jpg",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/03/3d07e05a-b864-4c85-bf63-a35d2a911078/og-image.jpg",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/03/3d07e05a-b864-4c85-bf63-a35d2a911078/favicon.png",
+  "ogTitle": "Automate repository tasks with GitHub Agentic Workflows",
+  "ogDescription": "Build automations using coding agents in GitHub Actions to handle triage, documentation, code quality, and more.",
+  "ogSiteName": "The GitHub Blog",
+  "sourceUrl": "https://github.blog/ai-and-ml/automate-repository-tasks-with-github-agentic-workflows/",
+  "imageSource": "og:image",
+  "faviconSource": "https://github.blog/wp-content/uploads/2019/01/cropped-github-favicon-512.png?fit=32%2C32",
+  "reason": ""
+}
