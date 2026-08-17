@@ -1,0 +1,14 @@
+{
+  "status": "og",
+  "noticiaId": "b920131a-1cc1-4ec3-9db0-68d2aff2408a",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/04/b920131a-1cc1-4ec3-9db0-68d2aff2408a/og-image.jpg",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/04/b920131a-1cc1-4ec3-9db0-68d2aff2408a/og-image.jpg",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/04/b920131a-1cc1-4ec3-9db0-68d2aff2408a/favicon.png",
+  "ogTitle": "Turn Your IaC into a Lightning-Fast Platform | Terramate",
+  "ogDescription": "A modern approach to simplify and transform your way of managing Terraform, OpenTofu and Terragrunt. Reclaim agility and deploy with confidence.",
+  "ogSiteName": "terramate.io",
+  "sourceUrl": "https://terramate.io/",
+  "imageSource": "og:image",
+  "faviconSource": "https://terramate.io/apple-touch-icon.png",
+  "reason": ""
+}
