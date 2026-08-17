@@ -1,0 +1,14 @@
+{
+  "status": "og",
+  "noticiaId": "27a9da9b-4c26-4dcb-8e4b-bed0582f8dc0",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/06/27a9da9b-4c26-4dcb-8e4b-bed0582f8dc0/banner.jpg",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/06/27a9da9b-4c26-4dcb-8e4b-bed0582f8dc0/og-image.jpg",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/06/27a9da9b-4c26-4dcb-8e4b-bed0582f8dc0/favicon.png",
+  "ogTitle": "Copilot SDK is now generally available - GitHub Changelog",
+  "ogDescription": "The GitHub Copilot SDK is now generally available. You can embed GitHub Copilot’s agentic engine into your own applications, services, and developer tools with a stable API and production-ready support.…",
+  "ogSiteName": "The GitHub Blog",
+  "sourceUrl": "https://github.blog/changelog/2026-06-02-copilot-sdk-is-now-generally-available/",
+  "imageSource": "og:image",
+  "faviconSource": "https://github.blog/wp-content/uploads/2019/01/cropped-github-favicon-512.png?fit=32%2C32",
+  "reason": ""
+}
