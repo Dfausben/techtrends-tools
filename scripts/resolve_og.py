@@ -7,7 +7,7 @@ from urllib.parse import urljoin, urlparse
 
 import requests
 from bs4 import BeautifulSoup
-from PIL import Image, ImageDraw, ImageOps
+from PIL import Image, ImageOps
 
 
 USER_AGENT = (
@@ -33,15 +33,6 @@ IMAGE_HEADERS = {
 }
 
 JPEG_QUALITY = 88
-
-BANNER_WIDTH = 1200
-BANNER_HEIGHT = 420
-
-# Empieza pronto, pero de forma suave.
-GRADIENT_START = 0.15
-
-# Casi negro al final.
-GRADIENT_MAX_ALPHA = 250
 
 
 def clean_text(value):
@@ -168,7 +159,6 @@ def find_favicon_candidates(soup, page_url):
     seen = set()
 
     for _, url in candidates:
-
         if url in seen:
             continue
 
@@ -326,10 +316,11 @@ def download_image(session, url, referer=None):
 
 def save_og_image(image, path):
     """
-    Conserva la OG prácticamente original.
+    Guarda la imagen OG sin modificar su composición.
+
     Solo:
       - convierte a RGB
-      - limita dimensiones enormes
+      - limita tamaño si es enorme
       - guarda JPEG
     """
 
@@ -348,108 +339,6 @@ def save_og_image(image, path):
         quality=JPEG_QUALITY,
         optimize=True
     )
-
-
-def create_banner(image):
-    """
-    Crea el banner de Teams a partir de la OG.
-
-    Únicamente:
-      - crop tipo cover 1200x420
-      - degradado negro inferior
-
-    No añade texto ni elementos.
-    """
-
-    image = convert_to_rgb(
-        image
-    )
-
-    banner = ImageOps.fit(
-        image,
-        (
-            BANNER_WIDTH,
-            BANNER_HEIGHT
-        ),
-        method=Image.Resampling.LANCZOS,
-        centering=(0.5, 0.5)
-    )
-
-    banner = banner.convert(
-        "RGBA"
-    )
-
-    overlay = Image.new(
-        "RGBA",
-        banner.size,
-        (0, 0, 0, 0)
-    )
-
-    draw = ImageDraw.Draw(
-        overlay
-    )
-
-    start_y = int(
-        BANNER_HEIGHT * GRADIENT_START
-    )
-
-    gradient_height = (
-        BANNER_HEIGHT - start_y
-    )
-
-    # Base oscura en la zona donde realmente
-    # van a vivir autor + título.
-    base_start_y = int(
-        BANNER_HEIGHT * 0.52
-    )
-
-    draw.rectangle(
-        [
-            (0, base_start_y),
-            (BANNER_WIDTH, BANNER_HEIGHT)
-        ],
-        fill=(
-            0,
-            0,
-            0,
-            70
-        )
-    )
-
-    # Gradiente progresivo, bastante agresivo abajo.
-    for y in range(
-        start_y,
-        BANNER_HEIGHT
-    ):
-        progress = (
-            y - start_y
-        ) / max(
-            gradient_height - 1,
-            1
-        )
-
-        alpha = int(
-            GRADIENT_MAX_ALPHA
-            * (progress ** 1.20)
-        )
-
-        draw.line(
-            [
-                (0, y),
-                (BANNER_WIDTH, y)
-            ],
-            fill=(
-                0,
-                0,
-                0,
-                alpha
-            )
-        )
-
-    return Image.alpha_composite(
-        banner,
-        overlay
-    ).convert("RGB")
 
 
 def save_favicon(
@@ -488,11 +377,13 @@ def save_favicon(
             )
 
             x = (
-                canvas.width - icon.width
+                canvas.width
+                - icon.width
             ) // 2
 
             y = (
-                canvas.height - icon.height
+                canvas.height
+                - icon.height
             ) // 2
 
             canvas.alpha_composite(
@@ -513,7 +404,6 @@ def save_favicon(
             return True, favicon_url
 
         except Exception as exc:
-
             print(
                 f"Favicon descartado: {exc}"
             )
@@ -539,15 +429,8 @@ def save_json(path, data):
 def main():
 
     if len(sys.argv) < 5:
-
         print(
             "ERROR: faltan parámetros."
-        )
-
-        print(
-            'Uso: python resolve_og.py '
-            '"<noticiaId>" "<url>" '
-            '"<year>" "<month>"'
         )
 
         sys.exit(1)
@@ -589,11 +472,6 @@ def main():
         "og-image.jpg"
     )
 
-    banner_path = os.path.join(
-        noticia_dir,
-        "banner.jpg"
-    )
-
     favicon_path = os.path.join(
         noticia_dir,
         "favicon.png"
@@ -604,15 +482,13 @@ def main():
         "metadata.json"
     )
 
-    output_dir = "output"
-
     os.makedirs(
-        output_dir,
+        "output",
         exist_ok=True
     )
 
     result_path = os.path.join(
-        output_dir,
+        "output",
         "result.json"
     )
 
@@ -628,20 +504,12 @@ def main():
         f"{noticia_raw_base}/og-image.jpg"
     )
 
-    banner_public = (
-        f"{noticia_raw_base}/banner.jpg"
-    )
-
     favicon_public = (
         f"{noticia_raw_base}/favicon.png"
     )
 
-    fallback_og = (
+    fallback_image = (
         f"{raw_base}/assets/fallback-news.png"
-    )
-
-    fallback_banner = (
-        f"{raw_base}/assets/fallback-banner.jpg"
     )
 
     fallback_favicon = (
@@ -662,12 +530,8 @@ def main():
         f"URL: {page_url}"
     )
 
-    print(
-        f"Destino: {noticia_dir}"
-    )
-
     # ==================================================
-    # DESCARGAR PAGINA
+    # PAGINA
     # ==================================================
 
     try:
@@ -686,8 +550,8 @@ def main():
             "status": "fallback",
             "noticiaId": noticia_id,
 
-            "image": fallback_banner,
-            "ogImage": fallback_og,
+            "image": fallback_image,
+            "ogImage": fallback_image,
             "favicon": fallback_favicon,
 
             "ogTitle": "",
@@ -717,14 +581,6 @@ def main():
             result
         )
 
-        print(
-            json.dumps(
-                result,
-                ensure_ascii=False,
-                indent=2
-            )
-        )
-
         return
 
     final_url = response.url
@@ -739,26 +595,6 @@ def main():
         final_url
     )
 
-    print()
-    print(
-        f"OG title: {metadata['title']}"
-    )
-
-    print(
-        f"OG description: "
-        f"{metadata['description']}"
-    )
-
-    print(
-        f"OG site: "
-        f"{metadata['siteName']}"
-    )
-
-    print(
-        f"OG image: "
-        f"{metadata['imageUrl']}"
-    )
-
     # ==================================================
     # FAVICON
     # ==================================================
@@ -766,16 +602,14 @@ def main():
     favicon_ok = False
     favicon_source = ""
 
-    if metadata["faviconCandidates"]:
-
-        favicon_ok, favicon_source = save_favicon(
-            session=session,
-            candidates=metadata[
-                "faviconCandidates"
-            ],
-            page_url=final_url,
-            destination=favicon_path
-        )
+    favicon_ok, favicon_source = save_favicon(
+        session=session,
+        candidates=metadata[
+            "faviconCandidates"
+        ],
+        page_url=final_url,
+        destination=favicon_path
+    )
 
     final_favicon = (
         favicon_public
@@ -784,7 +618,7 @@ def main():
     )
 
     # ==================================================
-    # OG IMAGE + BANNER
+    # OG IMAGE
     # ==================================================
 
     image_ok = False
@@ -795,30 +629,15 @@ def main():
         try:
             source_image = download_image(
                 session=session,
-                url=metadata["imageUrl"],
+                url=metadata[
+                    "imageUrl"
+                ],
                 referer=final_url
             )
 
-            print(
-                "Imagen original: "
-                f"{source_image.width}x"
-                f"{source_image.height}"
-            )
-
             save_og_image(
-                source_image.copy(),
+                source_image,
                 og_image_path
-            )
-
-            banner = create_banner(
-                source_image.copy()
-            )
-
-            banner.save(
-                banner_path,
-                format="JPEG",
-                quality=JPEG_QUALITY,
-                optimize=True
             )
 
             image_ok = True
@@ -830,10 +649,6 @@ def main():
                 f"imagen OG: {exc}"
             )
 
-            print(
-                reason
-            )
-
     else:
 
         reason = (
@@ -841,44 +656,35 @@ def main():
             "ni twitter:image"
         )
 
-    # ==================================================
-    # RESULTADO
-    # ==================================================
-
     if image_ok:
 
         status = "og"
 
-        final_og_image = (
+        final_image = (
             og_image_public
-        )
-
-        final_banner = (
-            banner_public
         )
 
     else:
 
         status = "fallback"
 
-        final_og_image = (
-            fallback_og
+        final_image = (
+            fallback_image
         )
 
-        final_banner = (
-            fallback_banner
-        )
+    # ==================================================
+    # RESULTADO
+    # ==================================================
 
     result = {
         "status": status,
 
         "noticiaId": noticia_id,
 
-        # Banner procesado para Teams
-        "image": final_banner,
+        # La Adaptive Card usa directamente esta.
+        "image": final_image,
 
-        # OG sin degradado/crop
-        "ogImage": final_og_image,
+        "ogImage": final_image,
 
         "favicon": final_favicon,
 
@@ -917,12 +723,9 @@ def main():
 
     print()
     print("=" * 70)
-
     print(
-        f"RESULTADO: "
-        f"{status.upper()}"
+        f"RESULTADO: {status.upper()}"
     )
-
     print("=" * 70)
 
     print(
