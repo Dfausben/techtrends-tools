@@ -1,0 +1,14 @@
+{
+  "status": "fallback",
+  "noticiaId": "2041b122-0e6c-4d75-b403-0097c30eb54d",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-web.png",
+  "ogTitle": "",
+  "ogDescription": "",
+  "ogSiteName": "",
+  "sourceUrl": "",
+  "imageSource": "",
+  "faviconSource": "",
+  "reason": "Error descargando página: Invalid URL '': No scheme supplied. Perhaps you meant https://?"
+}
