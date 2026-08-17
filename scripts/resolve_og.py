@@ -1,7 +1,6 @@
 import html
 import json
 import os
-import re
 import sys
 from io import BytesIO
 from urllib.parse import urljoin, urlparse
@@ -38,11 +37,11 @@ JPEG_QUALITY = 88
 BANNER_WIDTH = 1200
 BANNER_HEIGHT = 420
 
-# El degradado empieza aproximadamente al 30 %.
-GRADIENT_START = 0.30
+# Empieza pronto, pero de forma suave.
+GRADIENT_START = 0.15
 
-# Negro inferior: 0-255.
-GRADIENT_MAX_ALPHA = 235
+# Casi negro al final.
+GRADIENT_MAX_ALPHA = 250
 
 
 def clean_text(value):
@@ -128,16 +127,18 @@ def find_favicon_candidates(soup, page_url):
 
         href_lower = absolute_url.lower()
 
-        # Preferimos formatos que Pillow puede manejar
-        # de forma fiable.
         if ".png" in href_lower:
             priority = 1
+
         elif "apple-touch-icon" in rel_text:
             priority = 2
+
         elif ".ico" in href_lower:
             priority = 3
+
         elif ".jpg" in href_lower or ".jpeg" in href_lower:
             priority = 4
+
         else:
             priority = 5
 
@@ -152,7 +153,6 @@ def find_favicon_candidates(soup, page_url):
         page_url
     )
 
-    # Fallback tradicional de cualquier web.
     candidates.append(
         (
             10,
@@ -164,15 +164,16 @@ def find_favicon_candidates(soup, page_url):
         key=lambda item: item[0]
     )
 
-    # Evitar repetidos.
     result = []
-
     seen = set()
 
     for _, url in candidates:
-        if url not in seen:
-            seen.add(url)
-            result.append(url)
+
+        if url in seen:
+            continue
+
+        seen.add(url)
+        result.append(url)
 
     return result
 
@@ -245,7 +246,6 @@ def find_metadata(soup, page_url):
             )
 
             image_source = key
-
             break
 
     return {
@@ -326,11 +326,11 @@ def download_image(session, url, referer=None):
 
 def save_og_image(image, path):
     """
-    Guarda una copia JPEG de la imagen OG.
-
-    No hace crop.
-    Solo convierte a RGB y limita imágenes
-    absurdamente grandes.
+    Conserva la OG prácticamente original.
+    Solo:
+      - convierte a RGB
+      - limita dimensiones enormes
+      - guarda JPEG
     """
 
     image = convert_to_rgb(
@@ -338,7 +338,7 @@ def save_og_image(image, path):
     )
 
     image.thumbnail(
-        (2000, 2000),
+        (2400, 2400),
         Image.Resampling.LANCZOS
     )
 
@@ -352,13 +352,13 @@ def save_og_image(image, path):
 
 def create_banner(image):
     """
-    Usa la imagen OG original.
+    Crea el banner de Teams a partir de la OG.
 
-    Únicas transformaciones:
-    - crop cover 1200x420
-    - degradado negro inferior
+    Únicamente:
+      - crop tipo cover 1200x420
+      - degradado negro inferior
 
-    No añade logos, texto ni elementos.
+    No añade texto ni elementos.
     """
 
     image = convert_to_rgb(
@@ -390,14 +390,33 @@ def create_banner(image):
     )
 
     start_y = int(
-        BANNER_HEIGHT
-        * GRADIENT_START
+        BANNER_HEIGHT * GRADIENT_START
     )
 
     gradient_height = (
         BANNER_HEIGHT - start_y
     )
 
+    # Base oscura en la zona donde realmente
+    # van a vivir autor + título.
+    base_start_y = int(
+        BANNER_HEIGHT * 0.52
+    )
+
+    draw.rectangle(
+        [
+            (0, base_start_y),
+            (BANNER_WIDTH, BANNER_HEIGHT)
+        ],
+        fill=(
+            0,
+            0,
+            0,
+            70
+        )
+    )
+
+    # Gradiente progresivo, bastante agresivo abajo.
     for y in range(
         start_y,
         BANNER_HEIGHT
@@ -409,12 +428,9 @@ def create_banner(image):
             1
         )
 
-        # Curva progresiva:
-        # casi invisible al principio,
-        # intensa al llegar abajo.
         alpha = int(
             GRADIENT_MAX_ALPHA
-            * (progress ** 1.7)
+            * (progress ** 1.20)
         )
 
         draw.line(
@@ -472,13 +488,11 @@ def save_favicon(
             )
 
             x = (
-                canvas.width
-                - icon.width
+                canvas.width - icon.width
             ) // 2
 
             y = (
-                canvas.height
-                - icon.height
+                canvas.height - icon.height
             ) // 2
 
             canvas.alpha_composite(
@@ -499,6 +513,7 @@ def save_favicon(
             return True, favicon_url
 
         except Exception as exc:
+
             print(
                 f"Favicon descartado: {exc}"
             )
@@ -524,6 +539,7 @@ def save_json(path, data):
 def main():
 
     if len(sys.argv) < 5:
+
         print(
             "ERROR: faltan parámetros."
         )
@@ -609,33 +625,27 @@ def main():
     )
 
     og_image_public = (
-        f"{noticia_raw_base}/"
-        "og-image.jpg"
+        f"{noticia_raw_base}/og-image.jpg"
     )
 
     banner_public = (
-        f"{noticia_raw_base}/"
-        "banner.jpg"
+        f"{noticia_raw_base}/banner.jpg"
     )
 
     favicon_public = (
-        f"{noticia_raw_base}/"
-        "favicon.png"
+        f"{noticia_raw_base}/favicon.png"
     )
 
     fallback_og = (
-        f"{raw_base}/"
-        "assets/fallback-news.png"
+        f"{raw_base}/assets/fallback-news.png"
     )
 
     fallback_banner = (
-        f"{raw_base}/"
-        "assets/fallback-banner.jpg"
+        f"{raw_base}/assets/fallback-banner.jpg"
     )
 
     fallback_favicon = (
-        f"{raw_base}/"
-        "assets/fallback-web.png"
+        f"{raw_base}/assets/fallback-web.png"
     )
 
     session = requests.Session()
@@ -657,7 +667,7 @@ def main():
     )
 
     # ==================================================
-    # DESCARGAR PÁGINA
+    # DESCARGAR PAGINA
     # ==================================================
 
     try:
@@ -675,17 +685,22 @@ def main():
         result = {
             "status": "fallback",
             "noticiaId": noticia_id,
+
             "image": fallback_banner,
             "ogImage": fallback_og,
             "favicon": fallback_favicon,
+
             "ogTitle": "",
             "ogDescription": "",
             "ogSiteName": get_hostname(
                 page_url
             ),
+
             "sourceUrl": page_url,
+
             "imageSource": "",
             "faviconSource": "",
+
             "reason": (
                 "Error descargando página: "
                 f"{exc}"
@@ -714,10 +729,6 @@ def main():
 
     final_url = response.url
 
-    print(
-        f"URL final: {final_url}"
-    )
-
     soup = BeautifulSoup(
         response.text,
         "html.parser"
@@ -732,14 +743,20 @@ def main():
     print(
         f"OG title: {metadata['title']}"
     )
+
     print(
-        f"OG description: {metadata['description']}"
+        f"OG description: "
+        f"{metadata['description']}"
     )
+
     print(
-        f"OG site: {metadata['siteName']}"
+        f"OG site: "
+        f"{metadata['siteName']}"
     )
+
     print(
-        f"OG image: {metadata['imageUrl']}"
+        f"OG image: "
+        f"{metadata['imageUrl']}"
     )
 
     # ==================================================
@@ -783,7 +800,7 @@ def main():
             )
 
             print(
-                "Imagen OG original: "
+                "Imagen original: "
                 f"{source_image.width}x"
                 f"{source_image.height}"
             )
@@ -854,12 +871,13 @@ def main():
 
     result = {
         "status": status,
+
         "noticiaId": noticia_id,
 
-        # Imagen que utiliza el banner de Teams
+        # Banner procesado para Teams
         "image": final_banner,
 
-        # Imagen OG sin crop/degradado
+        # OG sin degradado/crop
         "ogImage": final_og_image,
 
         "favicon": final_favicon,
@@ -887,13 +905,11 @@ def main():
         "reason": reason
     }
 
-    # metadata permanente dentro de la noticia
     save_json(
         metadata_path,
         result
     )
 
-    # copia temporal que consume el workflow
     save_json(
         result_path,
         result
@@ -901,9 +917,12 @@ def main():
 
     print()
     print("=" * 70)
+
     print(
-        f"RESULTADO: {status.upper()}"
+        f"RESULTADO: "
+        f"{status.upper()}"
     )
+
     print("=" * 70)
 
     print(
