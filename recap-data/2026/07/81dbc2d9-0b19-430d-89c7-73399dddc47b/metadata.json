@@ -1,0 +1,14 @@
+{
+  "status": "fallback",
+  "noticiaId": "81dbc2d9-0b19-430d-89c7-73399dddc47b",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-banner.jpg",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-web.png",
+  "ogTitle": "",
+  "ogDescription": "",
+  "ogSiteName": "",
+  "sourceUrl": "hts",
+  "imageSource": "",
+  "faviconSource": "",
+  "reason": "Error descargando página: Invalid URL 'hts': No scheme supplied. Perhaps you meant https://hts?"
+}
