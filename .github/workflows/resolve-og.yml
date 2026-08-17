@@ -27,12 +27,16 @@ on:
     types:
       - techtrends_news_image
 
+
 permissions:
   contents: write
   issues: write
 
+
 jobs:
+
   resolve-og:
+
     runs-on: ubuntu-latest
 
     env:
@@ -40,22 +44,42 @@ jobs:
 
     steps:
 
+      # ==================================================
+      # CHECKOUT
+      # ==================================================
+
       - name: Descargar repositorio
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+
+      # ==================================================
+      # PYTHON
+      # ==================================================
 
       - name: Configurar Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
+
       - name: Instalar dependencias
+        shell: bash
         run: |
+          python -m pip install --upgrade pip
           pip install requests beautifulsoup4 pillow
+
+
+      # ==================================================
+      # PARAMETROS
+      # ==================================================
 
       - name: Preparar parámetros
         id: params
         shell: bash
         run: |
+
           if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
 
             NOTICIA_ID="${{ github.event.client_payload.noticiaId }}"
@@ -77,73 +101,139 @@ jobs:
           echo "year=$YEAR" >> "$GITHUB_OUTPUT"
           echo "month=$MONTH" >> "$GITHUB_OUTPUT"
 
+
       - name: Mostrar parámetros
         shell: bash
         run: |
-          echo "ID: ${{ steps.params.outputs.noticia_id }}"
-          echo "URL: ${{ steps.params.outputs.url }}"
-          echo "Año: ${{ steps.params.outputs.year }}"
-          echo "Mes: ${{ steps.params.outputs.month }}"
+
+          echo "Noticia:"
+          echo "${{ steps.params.outputs.noticia_id }}"
+
+          echo "URL:"
+          echo "${{ steps.params.outputs.url }}"
+
+          echo "Año:"
+          echo "${{ steps.params.outputs.year }}"
+
+          echo "Mes:"
+          echo "${{ steps.params.outputs.month }}"
+
+
+      # ==================================================
+      # OG
+      # ==================================================
 
       - name: Resolver OG
+        shell: bash
         run: |
+
           python scripts/resolve_og.py \
             "${{ steps.params.outputs.noticia_id }}" \
             "${{ steps.params.outputs.url }}" \
             "${{ steps.params.outputs.year }}" \
             "${{ steps.params.outputs.month }}"
 
-      - name: Guardar imagen OG si existe
+
+      - name: Mostrar resultado
         shell: bash
         run: |
-          IMAGE_PATH="recap-images/${{ steps.params.outputs.year }}/${{ steps.params.outputs.month }}/${{ steps.params.outputs.noticia_id }}.jpg"
 
-          if [ ! -f "$IMAGE_PATH" ]; then
-            echo "No existe imagen OG."
-            echo "Se utilizará el fallback global."
-            exit 0
-          fi
+          echo "================================"
+          echo "RESULTADO OG"
+          echo "================================"
+
+          cat output/result.json
+
+
+      # ==================================================
+      # GUARDAR DATOS DE LA NOTICIA
+      # ==================================================
+
+      - name: Guardar datos OG en repositorio
+        shell: bash
+        run: |
+
+          NOTICIA_PATH="recap-data/${{ steps.params.outputs.year }}/${{ steps.params.outputs.month }}/${{ steps.params.outputs.noticia_id }}"
+
+          echo "Ruta:"
+          echo "$NOTICIA_PATH"
 
           git config user.name "techtrends-bot"
           git config user.email "techtrends-bot@users.noreply.github.com"
 
-          git add "$IMAGE_PATH"
+          git add "$NOTICIA_PATH"
 
           if git diff --cached --quiet; then
+
             echo "No hay cambios que guardar."
+
             exit 0
+
           fi
 
-          git commit -m "Add OG image ${{ steps.params.outputs.noticia_id }}"
+          git commit \
+            -m "Resolve OG ${{ steps.params.outputs.noticia_id }}"
+
+          SUCCESS=false
 
           for ATTEMPT in 1 2 3 4 5
           do
 
+            echo "--------------------------------"
             echo "Intento de push: $ATTEMPT"
+            echo "--------------------------------"
 
-            if git pull --rebase origin main && git push origin HEAD:main
+            if git pull --rebase origin main
             then
-              echo "Push completado."
-              exit 0
+
+              if git push origin HEAD:main
+              then
+
+                echo "Push completado."
+
+                SUCCESS=true
+
+                break
+
+              fi
+
             fi
 
             git rebase --abort || true
 
-            sleep $((ATTEMPT * 2))
+            WAIT_TIME=$((ATTEMPT * 2))
+
+            echo "Esperando ${WAIT_TIME}s..."
+
+            sleep "$WAIT_TIME"
 
           done
 
-          echo "ERROR: no se pudo guardar la imagen."
-          exit 1
+          if [ "$SUCCESS" != "true" ]; then
 
-      - name: Crear o actualizar Issue de resultado
+            echo "ERROR:"
+            echo "No se pudo guardar la información OG."
+
+            exit 1
+
+          fi
+
+
+      # ==================================================
+      # ISSUE DE COMUNICACION CON POWER AUTOMATE
+      # ==================================================
+
+      - name: Crear o actualizar Issue
         shell: bash
+
         env:
           GH_TOKEN: ${{ github.token }}
+
         run: |
+
           ISSUE_TITLE="TT-OG ${{ steps.params.outputs.noticia_id }}"
 
-          echo "Buscando issue:"
+          echo "Buscando:"
           echo "$ISSUE_TITLE"
 
           ISSUE_NUMBER="$(
@@ -156,9 +246,11 @@ jobs:
               --jq '.[0].number // empty'
           )"
 
+
           if [ -n "$ISSUE_NUMBER" ]; then
 
-            echo "Issue existente: #$ISSUE_NUMBER"
+            echo "Issue existente:"
+            echo "#$ISSUE_NUMBER"
 
             gh issue edit \
               "$ISSUE_NUMBER" \
@@ -172,7 +264,7 @@ jobs:
 
           else
 
-            echo "Creando issue nuevo."
+            echo "Creando issue."
 
             gh issue create \
               --repo "$GITHUB_REPOSITORY" \
