@@ -1,0 +1,14 @@
+{
+  "status": "og",
+  "noticiaId": "f33117fc-6ef5-4298-ad40-8439968093b0",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/08/f33117fc-6ef5-4298-ad40-8439968093b0/banner.jpg",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/08/f33117fc-6ef5-4298-ad40-8439968093b0/og-image.jpg",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/08/f33117fc-6ef5-4298-ad40-8439968093b0/favicon.png",
+  "ogTitle": "Cloud Run sandboxes now in public preview",
+  "ogDescription": "A new feature just shipped for Cloud Run! Introducing Cloud Run sandboxes, now in public preview.",
+  "ogSiteName": "Medium",
+  "sourceUrl": "https://medium.com/google-cloud/cloud-run-sandboxes-now-in-public-preview-538f077eb3eb",
+  "imageSource": "og:image",
+  "faviconSource": "https://miro.medium.com/v2/resize:fill:1000:1000/7*GAOKVe--MXbEJmV9230oOQ.png",
+  "reason": ""
+}
