@@ -1,0 +1,15 @@
+{
+  "status": "og",
+  "noticiaId": "334d1707-7191-4e44-b8a4-77a5cc3bf37b",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/05/334d1707-7191-4e44-b8a4-77a5cc3bf37b/og-image.jpg",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/05/334d1707-7191-4e44-b8a4-77a5cc3bf37b/og-image.jpg",
+  "mailBanner": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/05/334d1707-7191-4e44-b8a4-77a5cc3bf37b/mail-banner.jpg",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/05/334d1707-7191-4e44-b8a4-77a5cc3bf37b/favicon.png",
+  "ogTitle": "What’s gone wrong at GitHub?",
+  "ogDescription": "For most of its life, GitHub has been remarkably reliable. Then, somewhere in the last year or so, that stopped being the case. What happened?",
+  "ogSiteName": "LeadDev",
+  "sourceUrl": "https://leaddev.com/software-quality/whats-gone-wrong-at-github",
+  "imageSource": "og:image",
+  "faviconSource": "https://leaddev.com/wp-content/themes/pbc/assets/favicon-48x48.png",
+  "reason": ""
+}
