@@ -1,0 +1,14 @@
+{
+  "status": "fallback",
+  "noticiaId": "f829b589-3fc8-4cda-b396-011d3effc9ce",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/05/f829b589-3fc8-4cda-b396-011d3effc9ce/favicon.png",
+  "ogTitle": "AWS anuncia la disponibilidad general de AWS Interconnect - multicloud - AWS",
+  "ogDescription": "Descubra más sobre las novedades de AWS con AWS anuncia la disponibilidad general de AWS Interconnect - multicloud",
+  "ogSiteName": "Amazon Web Services, Inc.",
+  "sourceUrl": "https://aws.amazon.com/es/about-aws/whats-new/2026/04/aws-announces-ga-AWS-interconnect-multicloud/",
+  "imageSource": "",
+  "faviconSource": "https://a0.awsstatic.com/libra-css/images/site/touch-icon-iphone-114-smile.png",
+  "reason": "No se encontró og:image ni twitter:image"
+}
