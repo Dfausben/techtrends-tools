@@ -1,0 +1,14 @@
+{
+  "status": "og",
+  "noticiaId": "ab086e11-0994-4109-99ee-499bdcd7cfa3",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/03/ab086e11-0994-4109-99ee-499bdcd7cfa3/banner.jpg",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/03/ab086e11-0994-4109-99ee-499bdcd7cfa3/og-image.jpg",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/03/ab086e11-0994-4109-99ee-499bdcd7cfa3/favicon.png",
+  "ogTitle": "GitHub - terraform-linters/tflint: A Pluggable Terraform Linter",
+  "ogDescription": "A Pluggable Terraform Linter. Contribute to terraform-linters/tflint development by creating an account on GitHub.",
+  "ogSiteName": "GitHub",
+  "sourceUrl": "https://github.com/terraform-linters/tflint",
+  "imageSource": "og:image",
+  "faviconSource": "https://github.com/fluidicon.png",
+  "reason": ""
+}
