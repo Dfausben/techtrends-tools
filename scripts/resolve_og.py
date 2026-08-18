@@ -34,12 +34,25 @@ IMAGE_HEADERS = {
 
 JPEG_QUALITY = 88
 
-BANNER_WIDTH = 1200
-BANNER_HEIGHT = 420
 
-# Ahora el degradado es principalmente estético.
-GRADIENT_START = 0.35
-GRADIENT_MAX_ALPHA = 175
+# ==========================================================
+# MAIL BANNER
+# ==========================================================
+
+MAIL_BANNER_WIDTH = 1200
+MAIL_BANNER_HEIGHT = 320
+
+# Fondo definitivo de las noticias del correo:
+# #ffe7cf
+MAIL_BACKGROUND = (255, 231, 207)
+
+# Altura de la zona que se funde con el fondo del mail.
+MAIL_GRADIENT_HEIGHT = 105
+
+# Exponente del degradado.
+# > 1 hace que conserve más imagen al principio
+# y acelere el fundido al acercarse al final.
+MAIL_GRADIENT_POWER = 1.65
 
 
 def clean_text(value):
@@ -319,13 +332,28 @@ def download_image(session, url, referer=None):
 
     image.load()
 
+    # Corrige imágenes que vengan rotadas mediante EXIF.
+    image = ImageOps.exif_transpose(
+        image
+    )
+
     return image
 
 
 def save_og_image(image, path):
     """
-    Conserva la imagen OG sin alterar su composición.
+    Conserva la imagen OG prácticamente original.
+
+    Solo:
+    - corrige orientación
+    - convierte a RGB
+    - limita tamaño máximo
+    - guarda JPEG optimizado
     """
+
+    image = ImageOps.exif_transpose(
+        image
+    )
 
     image = convert_to_rgb(
         image
@@ -344,27 +372,38 @@ def save_og_image(image, path):
     )
 
 
-def create_banner(image):
+def create_mail_banner(image):
     """
-    Crea la versión para el hero de Teams.
+    Genera la imagen específica para el recap por correo.
 
-    Únicamente:
-    - crop cover
-    - resize 1200x420
-    - degradado oscuro inferior
+    Resultado:
+    - 1200x320
+    - crop centrado tipo COVER
+    - sin bandas vacías
+    - mantiene la proporción
+    - degradado inferior hacia #ffe7cf
 
-    No añade texto, logos ni elementos.
+    El degradado forma parte físicamente del JPEG,
+    así que Outlook no necesita soportar CSS especial.
     """
+
+    image = ImageOps.exif_transpose(
+        image
+    )
 
     image = convert_to_rgb(
         image
     )
 
+    # ------------------------------------------------------
+    # 1. CROP CENTRADO / COVER
+    # ------------------------------------------------------
+
     banner = ImageOps.fit(
         image,
         (
-            BANNER_WIDTH,
-            BANNER_HEIGHT
+            MAIL_BANNER_WIDTH,
+            MAIL_BANNER_HEIGHT
         ),
         method=Image.Resampling.LANCZOS,
         centering=(0.5, 0.5)
@@ -374,28 +413,42 @@ def create_banner(image):
         "RGBA"
     )
 
+    # ------------------------------------------------------
+    # 2. OVERLAY DEL DEGRADADO
+    # ------------------------------------------------------
+
     overlay = Image.new(
         "RGBA",
         banner.size,
-        (0, 0, 0, 0)
+        (
+            MAIL_BACKGROUND[0],
+            MAIL_BACKGROUND[1],
+            MAIL_BACKGROUND[2],
+            0
+        )
     )
 
     draw = ImageDraw.Draw(
         overlay
     )
 
-    start_y = int(
-        BANNER_HEIGHT
-        * GRADIENT_START
+    gradient_height = min(
+        MAIL_GRADIENT_HEIGHT,
+        MAIL_BANNER_HEIGHT
     )
 
-    gradient_height = (
-        BANNER_HEIGHT - start_y
+    start_y = (
+        MAIL_BANNER_HEIGHT
+        - gradient_height
     )
+
+    # ------------------------------------------------------
+    # 3. DEGRADADO HACIA #ffe7cf
+    # ------------------------------------------------------
 
     for y in range(
         start_y,
-        BANNER_HEIGHT
+        MAIL_BANNER_HEIGHT
     ):
         progress = (
             y - start_y
@@ -404,29 +457,67 @@ def create_banner(image):
             1
         )
 
-        # Empieza muy suave y gana fuerza abajo.
         alpha = int(
-            GRADIENT_MAX_ALPHA
-            * (progress ** 1.5)
+            255
+            * (
+                progress
+                ** MAIL_GRADIENT_POWER
+            )
         )
 
         draw.line(
             [
                 (0, y),
-                (BANNER_WIDTH, y)
+                (
+                    MAIL_BANNER_WIDTH - 1,
+                    y
+                )
             ],
             fill=(
-                0,
-                0,
-                0,
+                MAIL_BACKGROUND[0],
+                MAIL_BACKGROUND[1],
+                MAIL_BACKGROUND[2],
                 alpha
             )
         )
 
-    return Image.alpha_composite(
+    # ------------------------------------------------------
+    # 4. FUNDIR IMAGEN Y OVERLAY
+    # ------------------------------------------------------
+
+    banner = Image.alpha_composite(
         banner,
         overlay
-    ).convert("RGB")
+    ).convert(
+        "RGB"
+    )
+
+    # ------------------------------------------------------
+    # 5. FORZAR ÚLTIMA FILA AL COLOR EXACTO
+    #
+    # De este modo el final del JPEG coincide exactamente
+    # con background:#ffe7cf del HTML.
+    # ------------------------------------------------------
+
+    final_draw = ImageDraw.Draw(
+        banner
+    )
+
+    final_draw.line(
+        [
+            (
+                0,
+                MAIL_BANNER_HEIGHT - 1
+            ),
+            (
+                MAIL_BANNER_WIDTH - 1,
+                MAIL_BANNER_HEIGHT - 1
+            )
+        ],
+        fill=MAIL_BACKGROUND
+    )
+
+    return banner
 
 
 def save_favicon(
@@ -559,14 +650,16 @@ def main():
         exist_ok=True
     )
 
+    # Imagen OG original.
     og_image_path = os.path.join(
         noticia_dir,
         "og-image.jpg"
     )
 
-    banner_path = os.path.join(
+    # Imagen procesada exclusivamente para el correo.
+    mail_banner_path = os.path.join(
         noticia_dir,
-        "banner.jpg"
+        "mail-banner.jpg"
     )
 
     favicon_path = os.path.join(
@@ -601,8 +694,8 @@ def main():
         f"{noticia_raw_base}/og-image.jpg"
     )
 
-    banner_public = (
-        f"{noticia_raw_base}/banner.jpg"
+    mail_banner_public = (
+        f"{noticia_raw_base}/mail-banner.jpg"
     )
 
     favicon_public = (
@@ -649,14 +742,25 @@ def main():
 
         result = {
             "status": "fallback",
+
             "noticiaId": noticia_id,
 
+            # Se conserva por compatibilidad con el flow.
             "image": fallback_image,
+
             "ogImage": fallback_image,
+
+            # IMPORTANTE:
+            # Si no existe OG válida, NO generamos banner del mail.
+            # El child podrá usar su rama SIN OG.
+            "mailBanner": "",
+
             "favicon": fallback_favicon,
 
             "ogTitle": "",
+
             "ogDescription": "",
+
             "ogSiteName": get_hostname(
                 page_url
             ),
@@ -664,6 +768,7 @@ def main():
             "sourceUrl": page_url,
 
             "imageSource": "",
+
             "faviconSource": "",
 
             "reason": (
@@ -719,7 +824,7 @@ def main():
     )
 
     # ==================================================
-    # OG + BANNER
+    # OG + MAIL BANNER
     # ==================================================
 
     image_ok = False
@@ -742,22 +847,34 @@ def main():
                 f"{source_image.height}"
             )
 
-            # OG prácticamente original.
+            # ------------------------------------------
+            # OG ORIGINAL
+            # ------------------------------------------
+
             save_og_image(
                 source_image.copy(),
                 og_image_path
             )
 
-            # Versión preparada para el hero.
-            banner = create_banner(
+            # ------------------------------------------
+            # BANNER ESPECÍFICO DEL MAIL
+            # ------------------------------------------
+
+            mail_banner = create_mail_banner(
                 source_image.copy()
             )
 
-            banner.save(
-                banner_path,
+            mail_banner.save(
+                mail_banner_path,
                 format="JPEG",
                 quality=JPEG_QUALITY,
                 optimize=True
+            )
+
+            print(
+                "Mail banner generado: "
+                f"{MAIL_BANNER_WIDTH}x"
+                f"{MAIL_BANNER_HEIGHT}"
             )
 
             image_ok = True
@@ -788,26 +905,42 @@ def main():
 
         status = "og"
 
-        final_image = banner_public
+        # Ya NO usamos un banner específico para Teams.
+        # `image` apunta a la OG guardada.
+        final_image = og_image_public
+
         final_og_image = og_image_public
+
+        final_mail_banner = (
+            mail_banner_public
+        )
 
     else:
 
         status = "fallback"
 
         final_image = fallback_image
+
         final_og_image = fallback_image
+
+        # Sin una OG real, el mail no debe intentar
+        # pintar un banner falso.
+        final_mail_banner = ""
 
     result = {
         "status": status,
 
         "noticiaId": noticia_id,
 
-        # La Adaptive Card usa esta.
+        # Para mantener compatibilidad con el flow existente.
+        # Ahora apunta a la OG original, NO a banner.jpg.
         "image": final_image,
 
-        # OG limpia por si la queremos en otros sitios.
+        # OG original almacenada.
         "ogImage": final_og_image,
+
+        # Imagen exclusiva para el recap por correo.
+        "mailBanner": final_mail_banner,
 
         "favicon": final_favicon,
 
