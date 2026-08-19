@@ -34,11 +34,16 @@ IMAGE_HEADERS = {
 
 JPEG_QUALITY = 88
 
-MAIL_BANNER_WIDTH = 1200
-MAIL_BANNER_HEIGHT = 320
+# ==========================================================
+# MAIL BANNER
+# ==========================================================
 
+MAIL_BANNER_WIDTH = 1200
+MAIL_BANNER_HEIGHT = 180
+
+# Degradado largo y progresivo.
 MAIL_GRADIENT_HEIGHT = 105
-MAIL_GRADIENT_POWER = 1.65
+MAIL_GRADIENT_POWER = 2.2
 
 
 def clean_text(value):
@@ -352,13 +357,13 @@ def save_og_image(image, path):
 
 def create_mail_banner(image):
     """
-    Genera el banner específico para el correo.
+    Banner específico para el recap por correo.
 
-    Resultado:
-    - 1200x320
+    - 1200x180
     - crop centrado tipo COVER
-    - PNG con transparencia real
-    - degradado inferior de opacidad
+    - PNG con transparencia
+    - 75 px iniciales completamente visibles
+    - 105 px de degradado progresivo
     - termina completamente transparente
     """
 
@@ -416,10 +421,14 @@ def create_mail_banner(image):
     )
 
     # ==================================================
-    # DEGRADADO DE OPACIDAD
+    # DEGRADADO PROGRESIVO
     #
-    # 255 = totalmente visible
-    #   0 = totalmente transparente
+    # 255 = visible
+    #   0 = transparente
+    #
+    # POWER 2.2:
+    # el principio pierde muy poca opacidad y el fundido
+    # se hace más evidente conforme se acerca al final.
     # ==================================================
 
     for y in range(
@@ -453,18 +462,11 @@ def create_mail_banner(image):
             fill=alpha
         )
 
-    # ==================================================
-    # APLICAR TRANSPARENCIA
-    # ==================================================
-
     banner.putalpha(
         alpha_mask
     )
 
-    # ==================================================
-    # GARANTIZAR TRANSPARENCIA TOTAL EN LA ÚLTIMA FILA
-    # ==================================================
-
+    # Garantizamos transparencia absoluta abajo.
     final_alpha = banner.getchannel(
         "A"
     )
@@ -815,19 +817,13 @@ def main():
                 f"{source_image.height}"
             )
 
-            # ==================================================
-            # OG ORIGINAL
-            # ==================================================
-
+            # OG original.
             save_og_image(
                 source_image.copy(),
                 og_image_path
             )
 
-            # ==================================================
-            # MAIL BANNER PNG TRANSPARENTE
-            # ==================================================
-
+            # Banner corto y transparente del correo.
             mail_banner = create_mail_banner(
                 source_image.copy()
             )
@@ -872,9 +868,13 @@ def main():
 
         status = "og"
 
-        final_image = og_image_public
+        final_image = (
+            og_image_public
+        )
 
-        final_og_image = og_image_public
+        final_og_image = (
+            og_image_public
+        )
 
         final_mail_banner = (
             mail_banner_public
@@ -884,9 +884,13 @@ def main():
 
         status = "fallback"
 
-        final_image = fallback_image
+        final_image = (
+            fallback_image
+        )
 
-        final_og_image = fallback_image
+        final_og_image = (
+            fallback_image
+        )
 
         final_mail_banner = ""
 
@@ -895,14 +899,10 @@ def main():
 
         "noticiaId": noticia_id,
 
-        # Compatibilidad con el flow actual.
-        # Ya no apunta a banner.jpg.
         "image": final_image,
 
-        # OG original almacenada.
         "ogImage": final_og_image,
 
-        # PNG específico para el correo.
         "mailBanner": final_mail_banner,
 
         "favicon": final_favicon,
