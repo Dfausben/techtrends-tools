@@ -1,0 +1,15 @@
+{
+  "status": "og",
+  "noticiaId": "67884ca7-15c2-4ed4-abeb-51cfb39fafdf",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/04/67884ca7-15c2-4ed4-abeb-51cfb39fafdf/og-image.jpg",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/04/67884ca7-15c2-4ed4-abeb-51cfb39fafdf/og-image.jpg",
+  "mailBanner": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/04/67884ca7-15c2-4ed4-abeb-51cfb39fafdf/mail-banner.png",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/04/67884ca7-15c2-4ed4-abeb-51cfb39fafdf/favicon.png",
+  "ogTitle": "Crossplane Is the Cloud-Native Framework for Platform Engineering",
+  "ogDescription": "Create platforms like cloud providers by building your own APIs and services with control planes, extending Kubernetes to manage any resource anywhere, and using a library of components to assemble your platform faster",
+  "ogSiteName": "crossplane.io",
+  "sourceUrl": "https://www.crossplane.io/",
+  "imageSource": "og:image",
+  "faviconSource": "https://www.crossplane.io/favicon.ico",
+  "reason": ""
+}
