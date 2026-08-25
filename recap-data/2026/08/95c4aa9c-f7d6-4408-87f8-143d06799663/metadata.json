@@ -1,0 +1,15 @@
+{
+  "status": "fallback",
+  "noticiaId": "95c4aa9c-f7d6-4408-87f8-143d06799663",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "mailBanner": "",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-web.png",
+  "ogTitle": "",
+  "ogDescription": "",
+  "ogSiteName": "increíble.com",
+  "sourceUrl": "https://increíble.com",
+  "imageSource": "",
+  "faviconSource": "",
+  "reason": "Error descargando página: HTTPSConnectionPool(host='xn--increble-g2a.com', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"HTTPSConnection(host='xn--increble-g2a.com', port=443): Failed to resolve 'xn--increble-g2a.com' ([Errno -2] Name or service not known)\"))"
+}
