@@ -1,0 +1,15 @@
+{
+  "status": "fallback",
+  "noticiaId": "bbdc23bd-e32d-4db5-8ab2-37b037f5ea2d",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "mailBanner": "",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/08/bbdc23bd-e32d-4db5-8ab2-37b037f5ea2d/favicon.png",
+  "ogTitle": "Vandal: Videojuegos, noticias, guías, trucos y entretenimiento - PC, PS5, Xbox, Nintendo...",
+  "ogDescription": "Revista de videojuegos y entretenimiento para estar informado de las últimas novedades, análisis, trucos y guías de juegos de PC, PlayStation, Xbox, Nintendo y todo el ocio digital.",
+  "ogSiteName": "vandal.elespanol.com",
+  "sourceUrl": "https://vandal.elespanol.com/",
+  "imageSource": "",
+  "faviconSource": "https://www.vandalimg.com/apple-touch-icon-57x57.png",
+  "reason": "No se encontró og:image ni twitter:image"
+}
