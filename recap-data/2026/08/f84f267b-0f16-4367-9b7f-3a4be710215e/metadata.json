@@ -1,0 +1,15 @@
+{
+  "status": "fallback",
+  "noticiaId": "f84f267b-0f16-4367-9b7f-3a4be710215e",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "mailBanner": "",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-web.png",
+  "ogTitle": "",
+  "ogDescription": "",
+  "ogSiteName": "ofewmfp.com",
+  "sourceUrl": "https://ofewmfp.com",
+  "imageSource": "",
+  "faviconSource": "",
+  "reason": "Error descargando página: HTTPSConnectionPool(host='ofewmfp.com', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"HTTPSConnection(host='ofewmfp.com', port=443): Failed to resolve 'ofewmfp.com' ([Errno -2] Name or service not known)\"))"
+}
