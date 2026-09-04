@@ -1,0 +1,15 @@
+{
+  "status": "fallback",
+  "noticiaId": "661a3e42-2129-479f-b226-b66923d05d05",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "mailBanner": "",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-web.png",
+  "ogTitle": "",
+  "ogDescription": "",
+  "ogSiteName": "test",
+  "sourceUrl": "https://test",
+  "imageSource": "",
+  "faviconSource": "",
+  "reason": "Error descargando página: HTTPSConnectionPool(host='test', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"HTTPSConnection(host='test', port=443): Failed to resolve 'test' ([Errno -3] Temporary failure in name resolution)\"))"
+}
