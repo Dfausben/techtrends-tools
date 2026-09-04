@@ -1,0 +1,15 @@
+{
+  "status": "fallback",
+  "noticiaId": "046e21fd-4ead-4bd7-8d15-69faadd13824",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "mailBanner": "",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/09/046e21fd-4ead-4bd7-8d15-69faadd13824/favicon.png",
+  "ogTitle": "Argo CD - Declarative GitOps CD for Kubernetes",
+  "ogDescription": "",
+  "ogSiteName": "argo-cd.readthedocs.io",
+  "sourceUrl": "https://argo-cd.readthedocs.io/en/stable/",
+  "imageSource": "",
+  "faviconSource": "https://argo-cd.readthedocs.io/en/stable/assets/favicon.png",
+  "reason": "No se encontró og:image ni twitter:image"
+}
