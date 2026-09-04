@@ -1,0 +1,15 @@
+{
+  "status": "fallback",
+  "noticiaId": "5f3e8eff-fb20-4429-9be8-8f2fa09d4820",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "mailBanner": "",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-web.png",
+  "ogTitle": "",
+  "ogDescription": "",
+  "ogSiteName": "estoesunaprueba.com",
+  "sourceUrl": "https://estoesunaprueba.com",
+  "imageSource": "",
+  "faviconSource": "",
+  "reason": "Error descargando página: HTTPSConnectionPool(host='estoesunaprueba.com', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"HTTPSConnection(host='estoesunaprueba.com', port=443): Failed to resolve 'estoesunaprueba.com' ([Errno -3] Temporary failure in name resolution)\"))"
+}
