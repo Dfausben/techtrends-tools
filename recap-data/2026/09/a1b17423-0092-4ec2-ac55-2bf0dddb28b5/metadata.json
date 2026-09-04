@@ -1,0 +1,15 @@
+{
+  "status": "fallback",
+  "noticiaId": "a1b17423-0092-4ec2-ac55-2bf0dddb28b5",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "mailBanner": "",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/09/a1b17423-0092-4ec2-ac55-2bf0dddb28b5/favicon.png",
+  "ogTitle": "Disneyland Paris - Descubre la magia | Disneyland Paris",
+  "ogDescription": "Bienvenido a la página web oficial de Disneyland Paris. Descubre los 2 Parques de Disney, los 7 Hoteles de Disney, un campo de golf y Disney Village para incluso más magia y diversión.",
+  "ogSiteName": "Disneyland Paris",
+  "sourceUrl": "https://www.disneylandparis.com/es-es",
+  "imageSource": "",
+  "faviconSource": "https://www.disneylandparis.com/static/favicons/1.0.0/apple-icon-57x57.png",
+  "reason": "No se encontró og:image ni twitter:image"
+}
