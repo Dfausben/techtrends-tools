@@ -1,0 +1,15 @@
+{
+  "status": "fallback",
+  "noticiaId": "b5e652e9-fff8-4a9b-932a-7f53f0f9490b",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "mailBanner": "",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-web.png",
+  "ogTitle": "",
+  "ogDescription": "",
+  "ogSiteName": "nytimes.com",
+  "sourceUrl": "https://www.nytimes.com/2026/09/04/opinion/clinical-trials-drugs-science.html",
+  "imageSource": "",
+  "faviconSource": "",
+  "reason": "Error descargando página: 403 Client Error: Forbidden for url: https://www.nytimes.com/2026/09/04/opinion/clinical-trials-drugs-science.html"
+}
