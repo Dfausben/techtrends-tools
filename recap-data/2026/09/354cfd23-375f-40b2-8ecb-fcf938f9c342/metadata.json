@@ -1,0 +1,15 @@
+{
+  "status": "fallback",
+  "noticiaId": "354cfd23-375f-40b2-8ecb-fcf938f9c342",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "mailBanner": "",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-web.png",
+  "ogTitle": "",
+  "ogDescription": "",
+  "ogSiteName": "quevienesabuscar.com",
+  "sourceUrl": "https://quevienesabuscar.com",
+  "imageSource": "",
+  "faviconSource": "",
+  "reason": "Error descargando página: HTTPSConnectionPool(host='quevienesabuscar.com', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"HTTPSConnection(host='quevienesabuscar.com', port=443): Failed to resolve 'quevienesabuscar.com' ([Errno -2] Name or service not known)\"))"
+}
