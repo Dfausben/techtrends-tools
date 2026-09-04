@@ -1,0 +1,15 @@
+{
+  "status": "fallback",
+  "noticiaId": "86a394d2-5ab0-47a3-ba60-c383f5743c67",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "mailBanner": "",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-web.png",
+  "ogTitle": "",
+  "ogDescription": "",
+  "ogSiteName": "",
+  "sourceUrl": "https://",
+  "imageSource": "",
+  "faviconSource": "",
+  "reason": "Error descargando página: Invalid URL 'https://': No host supplied"
+}
