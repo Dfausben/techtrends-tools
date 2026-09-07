@@ -1,0 +1,15 @@
+{
+  "status": "og",
+  "noticiaId": "a7649640-01e2-4248-b654-446531654452",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/08/a7649640-01e2-4248-b654-446531654452/og-image.jpg",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/08/a7649640-01e2-4248-b654-446531654452/og-image.jpg",
+  "mailBanner": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/08/a7649640-01e2-4248-b654-446531654452/mail-banner.png",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/08/a7649640-01e2-4248-b654-446531654452/favicon.png",
+  "ogTitle": "What's new in Lens K8S IDE 2026.8: 20× performance boost and Argo CD",
+  "ogDescription": "Lens K8S IDE 2026.8 is up to 20× faster on large clusters and brings Argo CD GitOps into the navigator, with one-click Sync, Refresh, and Ask AI.",
+  "ogSiteName": "lenshq.io",
+  "sourceUrl": "https://lenshq.io/blog/lens-release-august26/",
+  "imageSource": "og:image",
+  "faviconSource": "https://lenshq.io/icon.png?aa9a8b6b33b90fdf",
+  "reason": ""
+}
