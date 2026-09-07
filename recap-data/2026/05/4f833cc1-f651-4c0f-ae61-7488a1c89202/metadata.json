@@ -1,0 +1,15 @@
+{
+  "status": "fallback",
+  "noticiaId": "4f833cc1-f651-4c0f-ae61-7488a1c89202",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "mailBanner": "",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-web.png",
+  "ogTitle": "",
+  "ogDescription": "",
+  "ogSiteName": "hashicorpengineering.substack.com",
+  "sourceUrl": "https://hashicorpengineering.substack.com/p/from-iac-to-infraops-automate-vm",
+  "imageSource": "",
+  "faviconSource": "",
+  "reason": "Error descargando página: 403 Client Error: Forbidden for url: https://hashicorpengineering.substack.com/p/from-iac-to-infraops-automate-vm"
+}
