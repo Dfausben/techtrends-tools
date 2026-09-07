@@ -1,0 +1,15 @@
+{
+  "status": "og",
+  "noticiaId": "eda34003-0fe3-489d-8bc0-3f8bb52f3579",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/09/eda34003-0fe3-489d-8bc0-3f8bb52f3579/og-image.jpg",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/09/eda34003-0fe3-489d-8bc0-3f8bb52f3579/og-image.jpg",
+  "mailBanner": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/09/eda34003-0fe3-489d-8bc0-3f8bb52f3579/mail-banner.png",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/09/eda34003-0fe3-489d-8bc0-3f8bb52f3579/favicon.png",
+  "ogTitle": "Kubernetes Podcast from Google",
+  "ogDescription": "A weekly news and interview show with insight from the Kubernetes community.",
+  "ogSiteName": "kubernetespodcast.com",
+  "sourceUrl": "https://kubernetespodcast.com/",
+  "imageSource": "og:image",
+  "faviconSource": "https://kubernetespodcast.com/_assets/images/NewKPodRoboWhite.png",
+  "reason": ""
+}
