@@ -1,0 +1,15 @@
+{
+  "status": "og",
+  "noticiaId": "4a70d203-894f-43a3-bdca-0c248544374b",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/03/4a70d203-894f-43a3-bdca-0c248544374b/og-image.jpg",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/03/4a70d203-894f-43a3-bdca-0c248544374b/og-image.jpg",
+  "mailBanner": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/03/4a70d203-894f-43a3-bdca-0c248544374b/mail-banner.png",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/03/4a70d203-894f-43a3-bdca-0c248544374b/favicon.png",
+  "ogTitle": "Traefik becomes the de facto standard for Kubernetes Networking",
+  "ogDescription": "The Kubernetes community retired Ingress NGINX this month after years of under-resourcing. The migration scramble it triggered is now consolidating around one open source beneficiary, and Traefik Labs announced that convergence at KubeCon today. For years, the kubernetes/ingress-nginx project ran on borrowed time. Maintained largely by one or two volunteers working evenings and weekends, it […]",
+  "ogSiteName": "TNW | Business",
+  "sourceUrl": "https://thenextweb.com/news/traefik-kubernetes-ingress-nginx-replacement-ibm",
+  "imageSource": "og:image",
+  "faviconSource": "https://static.thenextweb.com/assets/img/favicon/apple-touch-icon-57x57.png",
+  "reason": ""
+}
