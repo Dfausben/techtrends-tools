@@ -1,0 +1,15 @@
+{
+  "status": "fallback",
+  "noticiaId": "d85f2911-00f3-4f0a-bb23-8a545151e8bf",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "mailBanner": "",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/11/d85f2911-00f3-4f0a-bb23-8a545151e8bf/favicon.png",
+  "ogTitle": "Power Apps",
+  "ogDescription": "",
+  "ogSiteName": "make.powerapps.com",
+  "sourceUrl": "https://make.powerapps.com/e/Default-2835cee8-01b5-4561-b27c-2027631bcfe1/canvas/?action=edit&app-id=%2Fproviders%2FMicrosoft.PowerApps%2Fapps%2F186c77a3-a90f-4956-94d7-55588698a6be",
+  "imageSource": "",
+  "faviconSource": "https://make.powerapps.com/favicon.ico",
+  "reason": "No se encontró og:image ni twitter:image"
+}
