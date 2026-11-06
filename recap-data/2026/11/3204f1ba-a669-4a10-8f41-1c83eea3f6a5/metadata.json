@@ -1,0 +1,15 @@
+{
+  "status": "fallback",
+  "noticiaId": "3204f1ba-a669-4a10-8f41-1c83eea3f6a5",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "mailBanner": "",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-web.png",
+  "ogTitle": "Redirigiendo",
+  "ogDescription": "",
+  "ogSiteName": "login.microsoftonline.com:443",
+  "sourceUrl": "https://login.microsoftonline.com:443/2835cee8-01b5-4561-b27c-2027631bcfe1/oauth2/authorize?client_id=00000003-0000-0ff1-ce00-000000000000&response_mode=form_post&ear_jwe_crypto=eyJhbGciOiJFQ0RILUVTIiwiZW5jIjoiQTI1NkdDTSIsImFwdiI6IkFBQUFDVVZoY2tOc2FXVnVkR2dBQUFCRlEwc3pNQUFBQU56K0c0L09OUzJPMlk1TXY4WkdWN2hqVzJvdHk3V0dwYWZYc1ZXSFRGZ0gyTUhITGEwb0xOaFN2cVl6Y3pSRHNzcFFncXVocm1QQkEvQ1NSdms4bEFkRHFXQm54TGxJeWV0OWZmcHkyaThzMUpYODNhVXpLWmxZL2pONmRYUUNsQUFBQUJqaUNwVU9vQW1XNWU2MURXcWFWbENxVWZNZVMwQjNIbTQ9In0%3D&ear_jwk=eyJhbGciOiJFQ0RILUVTIiwiY3J2IjoiUC0zODQiLCJ4IjoiQUFBQU1OeitHNC9PTlMyTzJZNU12OFpHVjdoalcyb3R5N1dHcGFmWHNWV0hURmdIMk1ISExhMG9MTmhTdnFZemN6UkRzZz09IiwieSI6IkFBQUFNTXBRZ3F1aHJtUEJBL0NTUnZrOGxBZERxV0JueExsSXlldDlmZnB5Mmk4czFKWDgzYVV6S1psWS9qTjZkWFFDbEE9PSIsImt0eSI6IkVDIn0%3D&spa_client_id=08e18876-6177-487e-b8b5-cf950c1e598c&client_info=1&response_type=code%20id_token%20spa_rt&resource=00000003-0000-0ff1-ce00-000000000000&scope=openid&nonce=57914CE51E313F9639DB90E83D1896C246C82C78697B0208-5A68F2DDF6A5E51404A846A530D0AD57368AC0AC98348E88DAE49E954609096C&redirect_uri=https%3A%2F%2Fstemdo.sharepoint.com%2F_forms%2Fdefault.aspx&state=OD0wJjMyPUFBTGVDUUFBQUJSSUpzM3pLRHRialRyR0ZNQ0VaQkdwdWFjTXVJZUMzJTJCSVdheE5CbDk1dmlIJTJGd1lMWWpXeXZQb3MxY3V0cWE5Z0I1JTJGTGtmeHAlMkZCajJTJTJGZXltOWNBQlh1VmFPWkRBdFhDTldXZVFzNERWVkRWR3VOcXNSYktveVo2YlQlMkZXR0NyMFl1T1RHTDdwdjRlSUV4dmxvZUU5ZGZUTWM5amRaRWc1Q1pNMVE1YzVRTEZ2JTJGR1NGZlJyYXJZa1U0U3pPRlIzTzF2SnQyUWg3V3ZNWnVkRUNoUENsJTJGS0xLUEMlMkI1JTJGJTJCT2dOaU00M1ozeGFKTUttTE0wMk41WDRsblBYQkE3cHNoN0VEUXEwRTltd2k4VkxOSEtGdkpxMVhVaVlGdXc2VGlJY0NrWW52cTFoWWNkRnlPTTVXaFBOZEJuOTY1NkJDeHdPM3lRUVl1ViUyRno3Z0wlMkJHQU5zJTJGN05FJTJCUUclMkZ0cjdQVloySWNaRERSckdKQWF6dHcxZ0I4SU9nOWclM0QlM0Q&claims=%7B%22id_token%22%3A%7B%22xms_cc%22%3A%7B%22values%22%3A%5B%22CP1%22%5D%7D%7D%7D&wsucxt=1&cobrandid=11bd8083-87e0-41b5-bb78-0bc43c8a8e8a&client-request-id=fd304ca2-3073-3001-e0e8-feb5b0dafe83",
+  "imageSource": "",
+  "faviconSource": "",
+  "reason": "No se encontró og:image ni twitter:image"
+}
