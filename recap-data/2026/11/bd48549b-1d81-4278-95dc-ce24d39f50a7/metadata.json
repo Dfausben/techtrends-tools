@@ -1,0 +1,15 @@
+{
+  "status": "fallback",
+  "noticiaId": "bd48549b-1d81-4278-95dc-ce24d39f50a7",
+  "image": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "ogImage": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/assets/fallback-news.png",
+  "mailBanner": "",
+  "favicon": "https://raw.githubusercontent.com/Dfausben/techtrends-tools/main/recap-data/2026/11/bd48549b-1d81-4278-95dc-ce24d39f50a7/favicon.png",
+  "ogTitle": "Google",
+  "ogDescription": "",
+  "ogSiteName": "google.com",
+  "sourceUrl": "https://www.google.com/",
+  "imageSource": "",
+  "faviconSource": "https://www.gstatic.com/images/branding/searchlogo/ico/favicon.ico",
+  "reason": "No se encontró og:image ni twitter:image"
+}
